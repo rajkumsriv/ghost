@@ -4,18 +4,16 @@ services:
     env: docker
     autoDeploy: false
     disk:
-      name: ghost
+      name: ghost-content
       mountPath: /var/lib/ghost/content
       sizeGB: 10
     envVars:
-      - key: url
-        value: https://blog.cyberdharaa.com
       - key: database__client
         value: mysql
       - key: database__connection__host
         fromService:
           type: pserv
-          name: mysql
+          name: ghost-mysql         # <--- must match MySQL service name
           property: host
       - key: database__connection__database
         value: ghostdb
@@ -24,17 +22,17 @@ services:
       - key: database__connection__password
         fromService:
           type: pserv
-          name: mysql
+          name: ghost-mysql         # <--- must match MySQL service name
           envVarKey: MYSQL_PASSWORD
 
   - type: pserv
-    name: mysql
-    plan: standard
+    name: ghost-mysql               # <--- match this name
     env: docker
+    plan: standard
     repo: https://github.com/render-examples/mysql
     autoDeploy: false
     disk:
-      name: mysql
+      name: mysql-data
       mountPath: /var/lib/mysql
       sizeGB: 10
     envVars:
